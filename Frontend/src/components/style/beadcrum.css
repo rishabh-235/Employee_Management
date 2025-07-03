@@ -1,0 +1,10 @@
+.breadcrumb-container{
+    padding: 22px 30px 22px 30px;
+    color: #616161;
+    font-size: 18px;
+    font-weight: 400;
+}
+
+.breadcrumb-icon{
+    margin-right: 5px;
+}

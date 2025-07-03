@@ -1,0 +1,131 @@
+.mobile-dashboard-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 8.25rem;
+    padding: 1.6rem 1.5rem;
+}
+
+.mobile-dashboard-container h3 {
+    font-size: 17.5px;
+    font-weight: 500;
+}
+
+.check-in-checkout-time-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #2051E5;
+    width: 100%;
+    height: 65px;
+    border-radius: 13.5px;
+    margin-top: 5px;
+    padding: 0.6rem 1.2rem;
+    color: #FFFFFF;
+    font-size: 13.5px;
+    font-weight: 400;
+}
+
+.check-in-checkout-time, .break-time {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.check-in-checkout-indicator {
+    background-color: #E4E4E4;
+    width: 12px;
+    height: 38px;
+    border-radius: 8px;
+    border: 1.6px solid #FFFFFF;
+}
+
+.checked-in {
+    background-color: #64E800;
+}
+
+.checked-out {
+    background-color: #E80000;
+}
+
+.check-in-time, .break-start-time, .break-date {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.check-out-time, .break-end-time {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.break-time-table-container {
+    background-color: #E4E8F2;
+    height: 330px;
+    border-radius: 13.5px;
+}
+
+.break-time-table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #2051E5;
+    width: 100%;
+    height: 65px;
+    border-radius: 13.5px;
+    margin-top: 5px;
+    padding: 0.6rem 1.2rem;
+    color: #FFFFFF;
+    font-size: 13.5px;
+    font-weight: 400;
+    position: sticky;
+    top: 0;
+}
+
+.break-time-table-body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 260px;
+    overflow-y: auto;
+    padding: 0.6rem 0rem;
+}
+
+.break-description-row{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.2rem 1.2rem;
+    font-weight: 500;
+}
+
+.activity-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 0.5rem;
+    border-radius: 13.5px;
+}
+
+.activity-container h3 {
+    font-size: 17.5px;
+    font-weight: 500;
+}
+
+.activity-list {
+    background-color: #E9E9E9;
+    height: 170px;
+    padding: 0.6rem 2.5rem;
+    border-radius: 13.5px;
+    font-size: 18px;
+    color: #616161;
+    margin-top: 5px;
+    overflow-y: auto;
+}
+
+.activity-list ul {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}

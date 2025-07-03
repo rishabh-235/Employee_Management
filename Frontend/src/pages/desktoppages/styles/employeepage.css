@@ -1,0 +1,243 @@
+.employees-page-container {
+  padding: 20px;
+}
+
+.add-employee-button {
+  position: absolute;
+  top: 90px;
+  right: 55px;
+  color: #636060;
+  background-color: #d9d9d9;
+  width: 180px;
+  height: 45px;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.add-employee-button:hover {
+  background-color: #bfbfbf;
+}
+
+.employee-list{
+    display: flex;
+    flex-direction: column;
+    color: #616161;
+    font-size: 16px;
+    border: 2px solid #cccccc;
+    border-radius: 16px;
+}
+
+.employee-list-header {
+  display: flex;
+  font-weight: 500;
+  padding: 10px 8px;
+}
+
+.employee-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+}
+
+.employee-avatar div {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    font-size: 16px;
+    background-color: #FFF2EA;
+    color: #93312B;
+}
+
+.employee-list-row {
+    display: flex;
+    align-items: center;
+    padding: 6px 18px;
+    color: #101828;
+    font-size: 14px;
+    border-bottom: 1px solid #EAEAEA;
+}
+
+.pagination-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    padding: 0px 22px;
+}
+
+.pagination-previous-button {
+    background-color: #ffffff;
+    border: 2px solid #cccccc;
+    color: #636060;
+    border-radius: 10px;
+    padding: 8px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.pagination-previous-button:hover {
+    background-color: #bfbfbf;
+}
+
+.pagination-next-button {
+    background-color: #ffffff;
+    border: 2px solid #cccccc;
+    color: #636060;
+    border-radius: 10px;
+    padding: 8px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.pagination-next-button:hover {
+    background-color: #bfbfbf;
+}
+
+.page-numbers {
+    display: flex;
+    gap: 10px;
+}
+
+.page-number {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: 300;
+    font-size: 14px;
+}
+
+.active-page {
+    background-color: rgb(230, 230, 230);
+    disabled: true;
+    cursor: not-allowed;
+}
+
+.page-number:hover {
+    background-color: #f0f0f0;
+}
+
+.add-employee-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop: blur(80px);
+    width: 100vw;
+    height: 100vh;
+    margin: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.add-employee-card {
+    position: absolute;
+    width: 800px;
+    height: 580px;
+    background-color: #ffffff;
+    border-radius: 16px;
+}
+
+.add-employee-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+}
+
+.add-employee-form form {
+    display: flex;
+    flex-direction: column;
+    width: 55%;
+    padding: 20px;
+}
+
+.add-employee-form label {
+    font-size: 16px;
+    color: #5E5E5E;
+}
+
+.add-employee-form input {
+    width: 100%;
+    height: 38px;
+    padding: 10px;
+    border: 1px solid rgb(118, 118, 118);
+    border-radius: 8px;
+    margin-bottom: 13px;
+    margin-top: 6px;
+    font-size: 16px;
+    background-color: #F8F8F8;
+}
+
+.add-employee-save-button {
+    background-color: #D9D9D9;
+    border: none;
+    color: #636060;
+    border-radius: 8px;
+    width: 150px;
+    height: 40px;
+    padding: 7px 35px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 20px;
+    position: relative;
+    left: 37rem;
+}
+
+.status {
+    text-transform: capitalize;
+}
+
+.active-background {
+    background-color: #ECFDF3;
+    color: #027A48;
+    width: 90px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 16px;
+    padding: 0 10px;
+}
+
+.active-background div {
+    width: 10px;
+    height: 10px;
+    background-color: #12B76A;
+    border-radius: 50%;
+}
+
+.inactive-background {
+    background-color: #FFF2EA;
+    color: #F15046;
+    width: 90px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 16px;
+    padding: 0 10px;
+}
+
+.inactive-background div {
+    width: 10px;
+    height: 10px;
+    background-color: #F04438;
+    border-radius: 50%;
+}

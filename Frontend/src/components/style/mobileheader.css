@@ -1,0 +1,66 @@
+.mobile-header-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 130px;
+    background-color: #2051E5;
+    color: white;
+    border-bottom-left-radius: 23px;
+    border-bottom-right-radius: 23px;
+    z-index: 1000;
+}
+
+.mobile-header-svg{
+    position: absolute;
+    bottom: 0.5rem;
+    right: 14rem;
+}
+
+.mobile-header {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 20px;
+    width: 100%;
+    padding: 15px 20px;
+}
+
+.mobile-header-title p {
+    font-size: 14px;
+    font-weight: 200;
+}
+
+.mobile-header-title h4 {
+    font-size: 20px;
+    font-weight: 400;
+    margin-top: 5px;
+    margin-bottom: 15px;
+}
+
+.mobile-header-logo {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.mobile-header-logo span {
+    color: #E8E000;
+}
+
+.logout-button {
+    width: 4.5rem;
+    height: 35px;
+    background-color:rgb(201, 201, 201);
+    color: black;
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}

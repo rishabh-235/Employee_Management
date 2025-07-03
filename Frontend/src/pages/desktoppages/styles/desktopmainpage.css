@@ -1,0 +1,13 @@
+.desktopmainpagecontainer {
+    font-size: 1rem;
+    color: black;
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+}
+
+.desktopmainpagecontent{
+    flex-basis: 84.5%;
+    width: 100%;
+    height: 100%;
+}

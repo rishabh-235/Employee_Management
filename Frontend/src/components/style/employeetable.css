@@ -1,0 +1,171 @@
+.employee-table-container{
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    border-radius: 16px;
+    padding: 8px 0px;
+    overflow: auto;
+
+}
+
+.employee-table-header{
+    display: flex;
+    padding: 0px 18px;
+    color: #42526D;
+    font-size: 14px;
+    position: fixed;
+    background-color: #fff;
+    box-shadow: 0px 2px 4px 0px rgba(60, 64, 67, 0.3);
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+}
+
+.header-checkbox{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    text-align: center;
+}
+
+.header-employee-name{
+    display: flex;
+    align-items: center;
+    width: 388px;
+    height: 28px;
+    text-align: left;
+    padding-left: 10px;
+}
+
+.header-employee-id{
+    display: flex;
+    align-items: center;
+    width: 194px;
+    height: 28px;
+    text-align: left;
+    padding-left: 10px;
+}
+
+.header-assigned-leads{
+    display: flex;
+    align-items: center;
+    width: 159px;
+    height: 28px;
+    text-align: left;
+    padding-left: 10px;
+}
+
+.header-closed-leads{
+    display: flex;
+    align-items: center;
+    width: 208px;
+    height: 28px;
+    text-align: left;
+    padding-left: 10px;
+}
+
+.header-status{
+    display: flex;
+    align-items: center;
+    width: 208px;
+    height: 28px;
+    text-align: left;
+    padding-left: 10px;
+}
+
+.employee-table-body{
+    margin-top: 35px;
+}
+
+.avatar{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    width: 33px;
+    height: 33px;
+    text-align: center;
+    margin-left: 10px;
+}
+
+.avatar img{
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+.employee-table-container input {
+    background-color: #ffffff;
+    width: 1rem;
+    height: 1rem;
+}
+
+.employee-table-row{
+    display: flex;
+    align-items: center;
+    padding: 0px 18px;
+    color: #101828;
+    font-size: 14px;
+    border-bottom: 1px solid #EAEAEA;
+}
+
+.checkbox{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 45px;
+    text-align: center;
+}
+
+.employee-name{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+    width: 345px;
+    height: 45px;
+    text-align: left;
+    padding-left: 10px;
+}
+
+.employee-id{
+    display: flex;
+    align-items: center;
+    width: 194px;
+    height: 45px;
+    text-align: left;
+    padding-left: 10px;
+}
+
+.assigned-leads{
+    display: flex;
+    align-items: center;
+    width: 159px;
+    height: 45px;
+    text-align: left;
+    padding-left: 10px;
+}
+
+.closed-leads{
+    display: flex;
+    align-items: center;
+    width: 208px;
+    height: 45px;
+    text-align: left;
+    padding-left: 10px;
+}
+
+.status{
+    display: flex;
+    align-items: center;
+    width: 208px;
+    height: 45px;
+    text-align: left;
+    padding-left: 10px;
+}
+
+.employee-email{
+    color: #6B788E;
+}
