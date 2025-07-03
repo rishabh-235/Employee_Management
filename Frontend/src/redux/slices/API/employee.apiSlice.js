@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const employeeApiSlice = createApi({
   reducerPath: "employeeApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3000/api/employees" }),
+  baseQuery: fetchBaseQuery({ baseUrl: "https://employee-management-0pu3.onrender.com/api/employees" }),
   endpoints: (builder) => ({
     getEmployees: builder.query({
       query: () => "/getallEmployees",

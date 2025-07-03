@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const leadApiSlice = createApi({
   reducerPath: "leadApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3000/api/leads" }),
+  baseQuery: fetchBaseQuery({ baseUrl: "https://employee-management-0pu3.onrender.com/api/leads" }),
   endpoints: (builder) => ({
     getBulkUploadLeads: builder.query({
       query: () => "/getBulkUploadLeads",
