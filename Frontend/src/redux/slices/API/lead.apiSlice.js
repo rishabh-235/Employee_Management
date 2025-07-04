@@ -34,8 +34,18 @@ export const leadApiSlice = createApi({
         method: "POST",
         body: lead
       })
-    })
+    }),
+    getScheduledLeads: builder.query({
+      query: () => "/getScheduledLeads",
+    }),
+    scheduleLead: builder.mutation({
+      query: (lead) => ({
+        url: "/scheduleLeads",
+        method: "POST",
+        body: lead,
+      }),
+    }),
   }),
 });
 
-export const { useGetBulkUploadLeadsQuery, useAddLeadMutation, useGetLeadMutation, useChangeTypeMutation } = leadApiSlice;
+export const { useGetBulkUploadLeadsQuery, useAddLeadMutation, useGetLeadMutation, useChangeTypeMutation, useChangeStatusMutation, useGetScheduledLeadsQuery, useScheduleLeadMutation } = leadApiSlice;

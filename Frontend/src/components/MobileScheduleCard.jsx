@@ -1,12 +1,13 @@
-import React from "react";
+import { useSelector } from "react-redux";
 import "./style/mobileschedulecard.css";
 
-function MobileScheduleCard() {
+function MobileScheduleCard({lead}) {
+  const user = useSelector((state)=>state.user.user)
   return (
     <div className="mobile-schedule-card-container">
       <div className="mobile-card-left">
         <h4>Refferal</h4>
-        <p>949-365-6533</p>
+        <p>{lead.phone || lead.email}</p>
         <div className="mobile-schedule-card-address">
           <svg
             width="16"
@@ -20,16 +21,16 @@ function MobileScheduleCard() {
               fill="white"
             />
           </svg>
-          <p>Call</p>
+          <p>{user.location === lead.location ? "Call" : lead.location}</p>
         </div>
         <div className="mobile-schedule-card-name">
             <div className="mobile-schedule-card-avatar">JD</div>
-            <p>John Doe</p>
+            <p>{lead.name}</p>
         </div>
       </div>
       <div className="mobile-card-right">
         <h4>Date</h4>
-        <p>10/04/2025</p>
+        <p>{lead.scheduleAt.date}</p>
       </div>
     </div>
   );

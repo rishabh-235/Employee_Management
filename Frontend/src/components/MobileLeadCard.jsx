@@ -3,6 +3,8 @@ import "./style/mobileleadcard.css";
 import {
   useGetLeadMutation,
   useChangeTypeMutation,
+  useChangeStatusMutation,
+  useScheduleLeadMutation,
 } from "../redux/slices/API/lead.apiSlice";
 
 function MobileLeadCard({ lead }) {
@@ -14,6 +16,11 @@ function MobileLeadCard({ lead }) {
   const [leadData, setLeadData] = useState(null);
   const [changeType] = useChangeTypeMutation();
   const [type, setType] = useState("");
+  const [status, setStatus] = useState("");
+  const [changeStatus] = useChangeStatusMutation();
+  const [scheduledDate, setScheduledDate] = useState();
+  const [scheduledTime, setScheduledTime] = useState();
+  const [scheduleLead] = useScheduleLeadMutation();
 
   useEffect(() => {
     if (lead && lead._id) {
@@ -22,6 +29,9 @@ function MobileLeadCard({ lead }) {
         .then((data) => {
           setLeadData(data);
           setType(data.type);
+          setStatus(data.status);
+          setScheduledDate(data.scheduleAt.date);
+          setScheduledTime(data.scheduleAt.time);
         })
         .catch((error) => {
           console.error("Error fetching lead:", error);
@@ -38,7 +48,7 @@ function MobileLeadCard({ lead }) {
     } else if (event.target.innerText === "Cold") {
       type = "Cold";
     } else {
-      setToggleType(!toggleType);
+      setToggleType(false);
       return;
     }
 
@@ -53,9 +63,37 @@ function MobileLeadCard({ lead }) {
       });
   };
 
-  const handleChangeStatus = (event) => {
-    console.log(event.target.value);
-  }
+  const handleSaveStatus = () => {
+    changeStatus({ status: status, leadData: leadData })
+      .unwrap()
+      .then((res) => {
+        setStatus(res.lead.status);
+        setToggleStatus(false);
+      })
+      .catch((error) => {
+        console.error("Error changing status:", error);
+      });
+  };
+
+  const handleScheduleLead = () => {
+    const scheduleData = {
+      _id: leadData._id,
+      scheduledDate,
+      scheduledTime,
+    };
+
+    scheduleLead(scheduleData)
+      .unwrap()
+      .then((res) => {
+        setLeadData(res.lead);
+        setToggleDate(false);
+        setScheduledDate("");
+        setScheduledTime("");
+      })
+      .catch((error) => {
+        console.error("Error scheduling lead:", error);
+      });
+  };
 
   return (
     <div className="mobile-lead-card-container">
@@ -108,7 +146,7 @@ function MobileLeadCard({ lead }) {
             />
           </svg>
           <span className="lead-status">
-            {leadData?.status === "open" ? "Ongoing" : "Closed"}
+            {status === "open" ? "Ongoing" : "Closed"}
           </span>
         </div>
 
@@ -195,10 +233,29 @@ function MobileLeadCard({ lead }) {
           }`}
         >
           <label htmlFor="date">Date</label>
-          <input type="text" placeholder="dd / mm / yy" />
+          <input
+            onChange={(e) => {
+              setScheduledDate(e.target.value);
+            }}
+            type="text"
+            placeholder="dd / mm / yy"
+            value={scheduledDate ? scheduledDate : ""}
+          />
           <label htmlFor="time">Time</label>
-          <input type="text" placeholder="00:00" />
-          <button className="time-date-save-button">Save</button>
+          <input
+            onChange={(e) => {
+              setScheduledTime(e.target.value);
+            }}
+            type="text"
+            placeholder="00:00 AM/PM"
+            value={scheduledTime ? scheduledTime : ""}
+          />
+          <button
+            onClick={handleScheduleLead}
+            className="time-date-save-button"
+          >
+            Save
+          </button>
         </div>
 
         <div
@@ -229,11 +286,22 @@ function MobileLeadCard({ lead }) {
               />
             </svg>
           </p>
-          <select onChange={handleChangeStatus}>
-            <option value="ongoing">Ongoing</option>
-            <option value="closed">Closed</option>
+          <select
+            value={status || ""}
+            onChange={(event) => {
+              setStatus(event.target.value);
+            }}
+          >
+            <option value="">Select</option>
+            <option value="open">Ongoing</option>
+            <option disabled={leadData?.scheduleAt?.date ? true : false} value="closed">Closed</option>
           </select>
-          <button className="lead-status-save-button">Save</button>
+          <button
+            onClick={handleSaveStatus}
+            className="lead-status-save-button"
+          >
+            Save
+          </button>
           <div
             className={`lead-status-info ${showInfo ? "show-dropdown" : ""}`}
           >

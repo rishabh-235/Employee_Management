@@ -229,9 +229,16 @@ const getLead = async (req, res) => {
   }
 };
 
-const getAllLeads = async (req, res) => {
+const getAllLeads = async (_, res) => {
   try {
-    const leads = await Lead.find();
+    const leads = await Lead.find().sort({
+      status: {
+        $case: {
+          open: 0,
+          closed: 1,
+        },
+      },
+    });
     res.status(200).json(leads);
   } catch (error) {
     res.status(500).json({ message: "Error fetching leads", error });
@@ -305,7 +312,85 @@ const deleteLead = async (req, res) => {
   }
 };
 
-const scheduleLead = async (req, res) => {};
+const parseDateTime = (dateStr, timeStr) => {
+  // Convert date to YYYY-MM-DD
+  const [day, month, year] = dateStr.split("/");
+  let [time, modifier] = timeStr.split(" ");
+  let [hours, minutes] = time.split(":").map(Number);
+
+  if (modifier && modifier.toUpperCase() === "PM" && hours < 12) {
+    hours += 12;
+  }
+  if (modifier && modifier.toUpperCase() === "AM" && hours === 12) {
+    hours = 0;
+  }
+
+  // Pad hours and minutes
+  const hoursStr = hours.toString().padStart(2, "0");
+  const minutesStr = minutes.toString().padStart(2, "0");
+
+  // Construct ISO string
+  const isoString = `${year}-${month.padStart(2, "0")}-${day.padStart(
+    2,
+    "0"
+  )}T${hoursStr}:${minutesStr}:00`;
+  return new Date(isoString);
+};
+
+const scheduleLead = async (req, res) => {
+  try {
+    const { _id, scheduledDate, scheduledTime } = req.body;
+    const now = new Date();
+    const inputDate = parseDateTime(scheduledDate, scheduledTime);
+
+    if (isNaN(inputDate.getTime())) {
+      return res.status(400).json({ message: "Invalid date or time format" });
+    }
+
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const scheduled = new Date(
+      inputDate.getFullYear(),
+      inputDate.getMonth(),
+      inputDate.getDate()
+    );
+
+    if (scheduled < today) {
+      return res
+        .status(400)
+        .json({ message: "Scheduled date must be today or in the future" });
+    }
+
+    if (scheduled.getTime() === today.getTime()) {
+      const [hours, minutes] = scheduledTime.split(":").map(Number);
+      if (
+        hours < now.getHours() ||
+        (hours === now.getHours() && minutes <= now.getMinutes())
+      ) {
+        return res
+          .status(400)
+          .json({ message: "Scheduled time must be in the future" });
+      }
+    }
+    const lead = await Lead.findByIdAndUpdate(_id, {
+      scheduleAt: {
+        date: scheduledDate,
+        time: scheduledTime,
+      },
+    });
+    res.status(200).json({ message: "Lead scheduled successfully", lead });
+  } catch (error) {
+    res.status(500).json({ message: "Error scheduling lead", error });
+  }
+};
+
+const getScheduledLeads = async (_, res) => {
+  try {
+    const leads = await Lead.find({ scheduleAt: { $ne: null } });
+    res.status(200).json(leads);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching scheduled leads", error });
+  }
+};
 
 const changeType = async (req, res) => {
   try {
@@ -337,11 +422,11 @@ const changeStatus = async (req, res) => {
     if (!lead) {
       return res.status(404).json({ message: "Lead not found" });
     }
-    res.status(200).json({ message: "Lead type updated successfully", lead });
+    res.status(200).json({ message: "Lead status updated successfully", lead });
   } catch (error) {
-    res.status(500).json({ message: "Error changing lead type", error });
+    res.status(500).json({ message: "Error changing lead status", error });
   }
-}
+};
 
 const assignLeads = async (_, res) => {
   try {
@@ -365,5 +450,7 @@ export {
   getListOfBulkUploadLeads,
   assignLeads,
   changeType,
-  changeStatus
+  changeStatus,
+  getScheduledLeads,
+  scheduleLead,
 };
