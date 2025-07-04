@@ -9,6 +9,11 @@ const leadSchema = new Schema({
   language: { type: String, required: true },
   location: { type: String, required: true },
   assignedTo: { type: Schema.Types.ObjectId, ref: "Employee", default: null },
+  type: {
+    type: String,
+    enum: ["Hot", "Warm", "Cold"],
+    default: "Warm",
+  }
 });
 
 const Lead = mongoose.model("Lead", leadSchema);

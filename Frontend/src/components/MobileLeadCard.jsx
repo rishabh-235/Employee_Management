@@ -1,18 +1,68 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import "./style/mobileleadcard.css";
+import {
+  useGetLeadMutation,
+  useChangeTypeMutation,
+} from "../redux/slices/API/lead.apiSlice";
 
-function MobileLeadCard() {
+function MobileLeadCard({ lead }) {
   const [toggleType, setToggleType] = useState(false);
   const [toggleDate, setToggleDate] = useState(false);
   const [toggleStatus, setToggleStatus] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
+  const [getLead] = useGetLeadMutation();
+  const [leadData, setLeadData] = useState(null);
+  const [changeType] = useChangeTypeMutation();
+  const [type, setType] = useState("");
+
+  useEffect(() => {
+    if (lead && lead._id) {
+      getLead(lead)
+        .unwrap()
+        .then((data) => {
+          setLeadData(data);
+          setType(data.type);
+        })
+        .catch((error) => {
+          console.error("Error fetching lead:", error);
+        });
+    }
+  }, [lead]);
+
+  const handleChangeType = (event) => {
+    let type = "";
+    if (event.target.innerText === "Hot") {
+      type = "Hot";
+    } else if (event.target.innerText === "Warm") {
+      type = "Warm";
+    } else if (event.target.innerText === "Cold") {
+      type = "Cold";
+    } else {
+      setToggleType(!toggleType);
+      return;
+    }
+
+    setToggleType(!toggleType);
+    changeType({ type: type, leadData: leadData })
+      .unwrap()
+      .then((res) => {
+        setType(res.lead.type);
+      })
+      .catch((error) => {
+        console.error("Error changing type to Hot:", error);
+      });
+  };
+
+  const handleChangeStatus = (event) => {
+    console.log(event.target.value);
+  }
 
   return (
     <div className="mobile-lead-card-container">
       <div className="mobile-lead-card-div1">
         <div className="mobile-lead-card-header">
-          <h4>Rishabh Gupta</h4>
-          <p>rishabh@gmail.com</p>
+          <h4>{leadData?.name}</h4>
+          <p>{leadData?.email}</p>
         </div>
         <div className="mobile-lead-card-date">
           <p>Date</p>
@@ -29,7 +79,11 @@ function MobileLeadCard() {
                 fill="#445668"
               />
             </svg>
-            <span>April 04, 2025</span>
+            <span>
+              {leadData?.recievedAt
+                ? new Date(leadData.recievedAt).toISOString().split("T")[0]
+                : ""}
+            </span>
           </div>
         </div>
       </div>
@@ -44,10 +98,18 @@ function MobileLeadCard() {
           >
             <path
               d="M0 39.5C0 61.3152 17.6848 79 39.5 79C61.3152 79 79 61.3152 79 39.5C79 17.6848 61.3152 0 39.5 0C17.6848 0 0 17.6848 0 39.5ZM70.1526 39.5C70.1526 56.4289 56.4289 70.1526 39.5 70.1526C22.5711 70.1526 8.84744 56.4289 8.84744 39.5C8.84744 22.5711 22.5711 8.84744 39.5 8.84744C56.4289 8.84744 70.1526 22.5711 70.1526 39.5Z"
-              fill="#F77307"
+              fill={
+                type === "Hot"
+                  ? "#F77307"
+                  : type === "Warm"
+                  ? `#F7D307`
+                  : `#07EFF7`
+              }
             />
           </svg>
-          <span className="lead-status">Ongoing</span>
+          <span className="lead-status">
+            {leadData?.status === "open" ? "Ongoing" : "Closed"}
+          </span>
         </div>
 
         <div className="lead-card-actions">
@@ -116,8 +178,9 @@ function MobileLeadCard() {
         </div>
 
         <div
+          onClick={handleChangeType}
           className={`mobile-lead-card-dropdown-type ${
-            toggleType && "show-dropdown"
+            toggleType ? "show-dropdown" : ""
           }`}
         >
           <p>Type</p>
@@ -128,7 +191,7 @@ function MobileLeadCard() {
 
         <div
           className={`mobile-lead-card-dropdown-date-time ${
-            toggleDate && "show-dropdown"
+            toggleDate ? "show-dropdown" : ""
           }`}
         >
           <label htmlFor="date">Date</label>
@@ -140,7 +203,7 @@ function MobileLeadCard() {
 
         <div
           className={`mobile-lead-card-dropdown-status ${
-            toggleStatus && "show-dropdown"
+            toggleStatus ? "show-dropdown" : ""
           }`}
         >
           <p>
@@ -166,12 +229,14 @@ function MobileLeadCard() {
               />
             </svg>
           </p>
-          <select>
+          <select onChange={handleChangeStatus}>
             <option value="ongoing">Ongoing</option>
             <option value="closed">Closed</option>
           </select>
           <button className="lead-status-save-button">Save</button>
-          <div className={`lead-status-info ${showInfo && "show-dropdown"}`}>
+          <div
+            className={`lead-status-info ${showInfo ? "show-dropdown" : ""}`}
+          >
             <p>Lead can not be closed if scheduled</p>
           </div>
         </div>

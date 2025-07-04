@@ -2,10 +2,17 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const employeeApiSlice = createApi({
   reducerPath: "employeeApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "https://employee-management-0pu3.onrender.com/api/employees" }),
+  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3000/api/employees" }),
   endpoints: (builder) => ({
-    getEmployees: builder.query({
+    getAllEmployees: builder.query({
       query: () => "/getallEmployees",
+    }),
+    getEmployee: builder.mutation({
+      query: (employeeId) => ({
+        url: "/getemployee",
+        method: "POST",
+        body: employeeId,
+      }),
     }),
     addEmployee: builder.mutation({
       query: (newEmployee) => ({
@@ -24,4 +31,9 @@ export const employeeApiSlice = createApi({
   }),
 });
 
-export const { useGetEmployeesQuery, useAddEmployeeMutation, useLoginEmployeeMutation } = employeeApiSlice;
+export const {
+  useGetAllEmployeesQuery,
+  useGetEmployeeMutation,
+  useAddEmployeeMutation,
+  useLoginEmployeeMutation,
+} = employeeApiSlice;

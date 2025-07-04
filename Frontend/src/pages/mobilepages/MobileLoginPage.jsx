@@ -19,8 +19,7 @@ function MobileLoginPage() {
         event.target.reset();
         dispatch(login(response.employee));
         localStorage.setItem("tab", "1");
-        localStorage.setItem("email", email);
-        localStorage.setItem("password", password);
+        localStorage.setItem("empID", response.employee.employeeId);
       })
       .catch((error) => {
         console.error("Login failed:", error);

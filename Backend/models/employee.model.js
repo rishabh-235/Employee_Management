@@ -2,7 +2,7 @@ import mongoose, { Schema } from "mongoose";
 
 const employeeSchema = new Schema({
   employeeId: { type: String, required: true, unique: true },
-  fistName: { type: String, required: true },
+  firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   dateOfJoining: { type: Date, default: Date.now },
@@ -20,10 +20,14 @@ const employeeSchema = new Schema({
     {
       start: { type: Date, required: true },
       end: { type: Date, required: true },
+      date: { type: String, required: true },
     },
   ],
   currentBreak: {
-    start: { type: String, default: "--:--" },
+    start: {
+      time: { type: String, default: "--:--" },
+      date: { type: String, default: new Date().toLocaleDateString() },
+    },
     end: { type: String, default: "--:--" },
   },
   checkIn: {

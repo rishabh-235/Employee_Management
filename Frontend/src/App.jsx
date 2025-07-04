@@ -10,6 +10,7 @@ import MobileDashBoard from './pages/mobilepages/MobileDashBoard';
 import MobileLeads from './pages/mobilepages/MobileLeads';
 import MobileSchedule from './pages/mobilepages/MobileSchedule';
 import MobileProfile from './pages/mobilepages/MobileProfile';
+import MobileLoginPage from './pages/mobilepages/MobileLoginPage';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
             <Route path='leads' element={<MobileLeads />} />
             <Route path='schedule' element={<MobileSchedule />} />
             <Route path='profile' element={<MobileProfile />} />
+            <Route path='login' element={<MobileLoginPage />} />
           </Route>
         </Routes>
       </Router>

@@ -1,15 +1,14 @@
 import React, { useState } from "react";
 import "./styles/employeepage.css";
-import avatar from "../../assets/Avatar.png";
 import {
   useAddEmployeeMutation,
-  useGetEmployeesQuery,
+  useGetAllEmployeesQuery,
 } from "../../redux/slices/API/employee.apiSlice";
 
 function EmployeesPage() {
   const [showAddEmployee, setShowAddEmployee] = useState(false);
   const [addEmployee] = useAddEmployeeMutation();
-  const { data: employees } = useGetEmployeesQuery();
+  const { data: employees } = useGetAllEmployeesQuery();
 
   const handleToggleShowEmployee = () => {
     setShowAddEmployee(!showAddEmployee);

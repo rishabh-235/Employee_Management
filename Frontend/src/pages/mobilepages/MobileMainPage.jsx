@@ -5,22 +5,29 @@ import MobileLoginPage from "./MobileLoginPage";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { login } from "../../redux/slices/State/user.stateSlice";
-import { useLoginEmployeeMutation } from "../../redux/slices/API/employee.apiSlice";
+import { useGetEmployeeMutation } from "../../redux/slices/API/employee.apiSlice";
 
 function MobileMainPage() {
   const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
   const dispatch = useDispatch();
-  const [loginEmployee] = useLoginEmployeeMutation();
+  const [getEmployee] = useGetEmployeeMutation();
 
-  // useEffect(()=>{
-  //  const tab = localStorage.getItem("tab");
-  //  const email = localStorage.getItem("email");
-  //  const password = localStorage.getItem("password");
-  //  if(tab>0){
-  //   loginEmployee()
-  //   dispatch(login())
-  //  }
-  // }, [])
+  useEffect(() => {
+    const tab = localStorage.getItem("tab");
+    if (tab > 0) {
+      const employeeId = localStorage.getItem("empID");
+      getEmployee({ employeeId })
+        .unwrap()
+        .then((response) => {
+          dispatch(login(response.employee));
+          const count = localStorage.getItem("tab");
+          localStorage.setItem("tab", count);
+        })
+        .catch((error) => {
+          console.error("Error fetching employee:", error);
+        });
+    }
+  }, []);
 
   return (
     <div>

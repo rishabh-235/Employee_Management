@@ -1,10 +1,10 @@
 import React from "react";
 import "./style/employeetable.css";
 import avatar from "../assets/Avatar.png";
-import { useGetEmployeesQuery } from "../redux/slices/API/employee.apiSlice";
+import { useGetAllEmployeesQuery } from "../redux/slices/API/employee.apiSlice";
 
 function EmployeeTable() {
-  const { data: employees } = useGetEmployeesQuery();
+  const { data: employees } = useGetAllEmployeesQuery();
 
   return (
     <div className="employee-table-container">

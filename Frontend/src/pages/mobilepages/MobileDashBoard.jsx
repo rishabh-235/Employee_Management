@@ -2,8 +2,21 @@ import "./style/mobiledashboard.css";
 import { useSelector } from "react-redux";
 
 function MobileDashBoard() {
-
   const user = useSelector((state) => state.user.user);
+
+  const formateDate = (unformated) => {
+    const date = new Date(unformated);
+
+    const options = {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    };
+
+    const timeFormatted = date.toLocaleTimeString("en-US", options);
+
+    return timeFormatted;
+  };
 
   return (
     <div className="mobile-dashboard-container">
@@ -26,165 +39,43 @@ function MobileDashBoard() {
           <div className="break-time">
             <div className="break-start-time">
               <p>Break</p>
-              <p>9:15 AM</p>
+              <p>{user.currentBreak.start.time}</p>
             </div>
             <div className="break-end-time">
               <p>Ended</p>
-              <p>5:30 PM</p>
+              <p>{user.currentBreak.end}</p>
             </div>
           </div>
-          <div className="check-in-checkout-indicator checked-in"></div>
+          <div className="check-in-checkout-indicator checked-out"></div>
         </div>
         <div className="break-time-table-body">
-          <div className="break-description-row">
-            <div className="break-time">
-              <div className="break-start-time">
-                <p>Break</p>
-                <p>9:15 AM</p>
+          {user?.break?.map((breakItem, index) => (
+            <div key={index} className="break-description-row">
+              <div className="break-time">
+                <div className="break-start-time">
+                  <p>Break</p>
+                  <p>
+                    {formateDate(breakItem.start)}
+                  </p>
+                </div>
+                <div className="break-end-time">
+                  <p>Ended</p>
+                  <p>
+                    {formateDate(breakItem.end)}
+                  </p>
+                </div>
               </div>
-              <div className="break-end-time">
-                <p>Ended</p>
-                <p>5:30 PM</p>
-              </div>
-            </div>
 
-            <div className="break-date">
-              <p>Date</p>
-              <p>10/04/2025</p>
-            </div>
-          </div>
-
-          <div className="break-description-row">
-            <div className="break-time">
-              <div className="break-start-time">
-                <p>Break</p>
-                <p>9:15 AM</p>
-              </div>
-              <div className="break-end-time">
-                <p>Ended</p>
-                <p>5:30 PM</p>
+              <div className="break-date">
+                <p>Date</p>
+                <p>{breakItem.date}</p>
               </div>
             </div>
-
-            <div className="break-date">
-              <p>Date</p>
-              <p>10/04/2025</p>
-            </div>
-          </div>
-
-          <div className="break-description-row">
-            <div className="break-time">
-              <div className="break-start-time">
-                <p>Break</p>
-                <p>9:15 AM</p>
-              </div>
-              <div className="break-end-time">
-                <p>Ended</p>
-                <p>5:30 PM</p>
-              </div>
-            </div>
-
-            <div className="break-date">
-              <p>Date</p>
-              <p>10/04/2025</p>
-            </div>
-          </div>
-
-          <div className="break-description-row">
-            <div className="break-time">
-              <div className="break-start-time">
-                <p>Break</p>
-                <p>9:15 AM</p>
-              </div>
-              <div className="break-end-time">
-                <p>Ended</p>
-                <p>5:30 PM</p>
-              </div>
-            </div>
-
-            <div className="break-date">
-              <p>Date</p>
-              <p>10/04/2025</p>
-            </div>
-          </div>
-
-          <div className="break-description-row">
-            <div className="break-time">
-              <div className="break-start-time">
-                <p>Break</p>
-                <p>9:15 AM</p>
-              </div>
-              <div className="break-end-time">
-                <p>Ended</p>
-                <p>5:30 PM</p>
-              </div>
-            </div>
-
-            <div className="break-date">
-              <p>Date</p>
-              <p>10/04/2025</p>
-            </div>
-          </div>
-
-          <div className="break-description-row">
-            <div className="break-time">
-              <div className="break-start-time">
-                <p>Break</p>
-                <p>9:15 AM</p>
-              </div>
-              <div className="break-end-time">
-                <p>Ended</p>
-                <p>5:30 PM</p>
-              </div>
-            </div>
-
-            <div className="break-date">
-              <p>Date</p>
-              <p>10/04/2025</p>
-            </div>
-          </div>
-
-          <div className="break-description-row">
-            <div className="break-time">
-              <div className="break-start-time">
-                <p>Break</p>
-                <p>9:15 AM</p>
-              </div>
-              <div className="break-end-time">
-                <p>Ended</p>
-                <p>5:30 PM</p>
-              </div>
-            </div>
-
-            <div className="break-date">
-              <p>Date</p>
-              <p>10/04/2025</p>
-            </div>
-          </div>
-
-          <div className="break-description-row">
-            <div className="break-time">
-              <div className="break-start-time">
-                <p>Break</p>
-                <p>9:15 AM</p>
-              </div>
-              <div className="break-end-time">
-                <p>Ended</p>
-                <p>5:30 PM</p>
-              </div>
-            </div>
-
-            <div className="break-date">
-              <p>Date</p>
-              <p>10/04/2025</p>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
       <div className="activity-container">
-        <h3>
-          Recent Activity
-        </h3>
+        <h3>Recent Activity</h3>
         <div className="activity-list">
           <ul>
             <li>You were assigned 3 more new leads - 1 hour ago</li>

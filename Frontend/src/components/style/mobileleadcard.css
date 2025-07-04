@@ -8,6 +8,10 @@
   padding: 1.3rem;
 }
 
+.mobile-lead-card-div2 {
+  width: 5rem
+}
+
 .mobile-lead-card-header {
   display: flex;
   flex-direction: column;
@@ -44,7 +48,6 @@
 }
 
 .mobile-lead-card-status svg {
-  margin-left: 7rem;
   z-index: 100;
 }
 
@@ -52,7 +55,7 @@
   position: relative;
   font-size: 14px;
   bottom: 3.9rem;
-  left: 7.7rem;
+  left: 0.7rem;
   color: #101828;
   font-weight: 400;
 }
@@ -103,7 +106,7 @@
   font-size: 14px;
   color: #42526d;
   position: relative;
-  left: 2.5rem;
+  right: 5rem;
   bottom: 1rem;
   z-index: 900;
   background: white;
@@ -145,7 +148,7 @@
   font-size: 14px;
   color: #42526d;
   position: relative;
-  right: 0.5rem;
+  right: 8rem;
   bottom: 1rem;
   z-index: 900;
   background: white;
@@ -189,7 +192,7 @@
   font-size: 14px;
   color: #42526d;
   position: relative;
-  left: 1.5rem;
+  right: 6rem;
   bottom: 1rem;
   z-index: 900;
   background: white;
