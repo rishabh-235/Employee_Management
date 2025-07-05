@@ -1,5 +1,4 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { get } from "mongoose";
 
 export const activityApiSlice = createApi({
   reducerPath: "activityApi",
