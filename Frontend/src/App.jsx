@@ -13,6 +13,9 @@ import MobileProfile from './pages/mobilepages/MobileProfile';
 import MobileLoginPage from './pages/mobilepages/MobileLoginPage';
 
 function App() {
+
+  console.log(import.meta.env.VITE_BACKENDURL);
+
   return (
       <Router>
         <Routes>

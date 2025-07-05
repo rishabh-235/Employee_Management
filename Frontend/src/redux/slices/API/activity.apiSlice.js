@@ -4,7 +4,7 @@ import { get } from "mongoose";
 export const activityApiSlice = createApi({
   reducerPath: "activityApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: `${import.meta.env.VITE_BACKENDURL}/api/activities`,
+    baseUrl: `${import.meta.env.VITE_BACKENDURL}api/activities`,
   }),
   endpoints: (builder) => ({
     getActivityAdmin: builder.query({

@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const leadApiSlice = createApi({
   reducerPath: "leadApi",
-  baseQuery: fetchBaseQuery({ baseUrl: `${import.meta.env.VITE_BACKENDURL}/api/leads` }),
+  baseQuery: fetchBaseQuery({ baseUrl: `${import.meta.env.VITE_BACKENDURL}api/leads` }),
   endpoints: (builder) => ({
     getBulkUploadLeads: builder.query({
       query: () => "/getBulkUploadLeads",
