@@ -1,9 +1,11 @@
 import "./style/mobileheader.css";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../redux/slices/State/user.stateSlice";
+import { useLogoutEmployeeMutation } from "../redux/slices/API/employee.apiSlice";
 
 function MobileHeader() {
   const user = useSelector((state) => state.user);
+  const [logoutEmployee] = useLogoutEmployeeMutation();
   const dispatch = useDispatch();
 
   const hour = new Date().getHours();
@@ -71,7 +73,13 @@ function MobileHeader() {
       </svg>
 
       {user.isLoggedIn && (
-        <button onClick={() => dispatch(logout())} className="logout-button">
+        <button
+          onClick={() => {
+            logoutEmployee({ employeeId: user.user.employeeId });
+            dispatch(logout());
+          }}
+          className="logout-button"
+        >
           Logout
         </button>
       )}

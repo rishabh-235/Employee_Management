@@ -4,7 +4,9 @@ import { useSelector } from "react-redux";
 
 function MobileDashBoard() {
   const user = useSelector((state) => state.user.user);
-  const { data: activityEmployeeData } = useGetActivityEmployeeMutation(user.employeeId);
+  const { data: activityEmployeeData } = useGetActivityEmployeeMutation(
+    user.employeeId
+  );
 
   const formateDate = (unformated) => {
     const date = new Date(unformated);

@@ -20,14 +20,29 @@ function MobileMainPage() {
         .unwrap()
         .then((response) => {
           dispatch(login(response.employee));
-          const count = localStorage.getItem("tab");
-          localStorage.setItem("tab", count);
+          const count = parseInt(localStorage.getItem("tab"));
+          const token = sessionStorage.getItem('auth_token');
+          if (!token) {
+            sessionStorage.setItem('auth_token', response.employee._id);
+            localStorage.setItem("tab", count + 1);
+          }
         })
         .catch((error) => {
           console.error("Error fetching employee:", error);
         });
     }
   }, []);
+
+  window.addEventListener("beforeunload", () => {
+    const count = parseInt(localStorage.getItem("tab"));
+    if (count > 0) {
+      localStorage.setItem("tab", count - 1);
+      if (count === 1) {
+        localStorage.removeItem("empID");
+        localStorage.removeItem("tab");
+      }
+    }
+  });
 
   return (
     <div>

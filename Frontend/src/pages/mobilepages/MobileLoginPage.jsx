@@ -9,7 +9,7 @@ function MobileLoginPage() {
 
   const handleUserLogin = (event) => {
     event.preventDefault();
-    
+
     const email = event.target.email.value;
     const password = event.target.password.value;
 
@@ -24,7 +24,7 @@ function MobileLoginPage() {
       .catch((error) => {
         console.error("Login failed:", error);
       });
-  }
+  };
 
   return (
     <div className="mobile-login-page-container">

@@ -97,12 +97,10 @@ const loginEmployee = async (req, res) => {
         .json({ message: "Login successful (first time)", employee });
     }
 
-    // Calculate break duration and save to breaks array
     const currentDate = new Date();
     const breakStartTime = employee.currentBreak.start.time;
     const breakStartDate = new Date(employee.currentBreak.start.date);
 
-    // Create proper Date objects for start and end times
     const breakStart = new Date(breakStartDate);
     const [startHour, startMinute] = breakStartTime.split(":");
     breakStart.setHours(parseInt(startHour), parseInt(startMinute), 0, 0);
@@ -111,9 +109,7 @@ const loginEmployee = async (req, res) => {
     const [endHour, endMinute] = currentTime.split(":");
     breakEnd.setHours(parseInt(endHour), parseInt(endMinute), 0, 0);
 
-    // Handle breaks that span across different dates
     if (breakStartDate.toDateString() !== currentDate.toDateString()) {
-      // First break: from start time to end of that day
       const firstBreakEnd = new Date(breakStartDate);
       firstBreakEnd.setHours(23, 59, 59, 999);
 
@@ -124,7 +120,6 @@ const loginEmployee = async (req, res) => {
       };
       employee.break.push(firstBreak);
 
-      // Second break: from start of current day to current time
       const secondBreakStart = new Date(currentDate);
       secondBreakStart.setHours(0, 1, 0, 0);
 
@@ -135,7 +130,6 @@ const loginEmployee = async (req, res) => {
       };
       employee.break.push(secondBreak);
     } else {
-      // Single break within the same day
       const pastBreak = {
         start: breakStart,
         end: breakEnd,
@@ -144,7 +138,6 @@ const loginEmployee = async (req, res) => {
       employee.break.push(pastBreak);
     }
 
-    // Reset current break and set check-in time
     employee.currentBreak.start.time = "--:--";
     employee.currentBreak.start.date = currentDate.toISOString().split("T")[0];
     employee.currentBreak.end = "--:--";
@@ -164,8 +157,8 @@ const loginEmployee = async (req, res) => {
 
 const logoutEmployee = async (req, res) => {
   try {
-    const { employeeId } = req.body; // Fixed typo: empoyeeId -> employeeId
-    const employee = await Employee.findOne({ employeeId }); // Use findOne instead of find
+    const { employeeId } = req.body;
+    const employee = await Employee.findOne({ employeeId });
 
     if (!employee) {
       return res.status(404).json({ message: "Employee not found" });
@@ -178,7 +171,6 @@ const logoutEmployee = async (req, res) => {
 
     const currentDate = new Date();
 
-    // Set current break start time and date
     employee.currentBreak.start.time = currentTime;
     employee.currentBreak.start.date = currentDate.toISOString().split("T")[0];
     employee.currentBreak.end = "--:--";
@@ -186,7 +178,7 @@ const logoutEmployee = async (req, res) => {
 
     await employee.save();
 
-    res.status(200).json({ message: "Logged out successfully", employee }); // Changed from 400 to 200
+    res.status(200).json({ message: "Logged out successfully", employee });
   } catch (error) {
     console.error("Logout error:", error);
     res

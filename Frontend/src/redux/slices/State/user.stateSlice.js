@@ -16,6 +16,8 @@ const userSlice = createSlice({
     logout(state) {
       state.user = null;
       state.isLoggedIn = false;
+      localStorage.removeItem("tab");
+      localStorage.removeItem("user_data");
     },
   },
 });
