@@ -1,19 +1,11 @@
 import { useEffect, useState, useMemo } from "react";
 import Chart from "react-apexcharts";
+import { useGetClosedLeadsQuery } from "../redux/slices/API/lead.apiSlice";
 
-const BarChart = ({ data }) => {
-  const day = data?.map((item) => item.label) || [
-    "Mon",
-    "Tue",
-    "Wed",
-    "Thu",
-    "Fri",
-    "Sat",
-    "Sun",
-  ];
-  const revenue = data?.map((item) => item.totalRevenue) || [
-    4.4, 5.05, 4.14, 10, 2.27, 3.5, 4.2,
-  ];
+const BarChart = () => {
+  const { data: closedLeadsData } = useGetClosedLeadsQuery();
+
+  const day = closedLeadsData?.map((item) => item.day);
 
   const options = useMemo(
     () => ({
@@ -32,22 +24,38 @@ const BarChart = ({ data }) => {
         },
         plotOptions: {
           bar: {
-            borderRadius: 10,
-            width: "1"
+            horizontal: false,
+            borderRadius: 20,
+            width: "0",
+            borderRadiusApplication: "end",
           },
         },
         stroke: {
+          show: true,
           curve: "smooth",
-          width: [0, 0.5],
+          width: 0,
         },
         tooltip: {
-          enabled: false,
+          enabled: true,
           style: {
             fontSize: "10px",
             fontFamily: undefined,
           },
           x: {
             show: false,
+          },
+        },
+        states: {
+          hover: {
+            filter: {
+              type: "darken",
+            },
+          },
+          active: {
+            allowMultipleDataPointsSelection: false,
+            filter: {
+              type: "darken",
+            },
           },
         },
         grid: {
@@ -59,22 +67,7 @@ const BarChart = ({ data }) => {
         },
         xaxis: {
           type: "category",
-          categories: [
-            "Sat",
-            "Sun",
-            "Mon",
-            "Tue",
-            "Wed",
-            "Thu",
-            "Fri",
-            "Sat",
-            "Sun",
-            "Mon",
-            "Tue",
-            "Wed",
-            "Thu",
-            "Fri",
-          ],
+          categories: day,
           labels: {
             style: {
               colors: "#2E2E30",
@@ -91,19 +84,7 @@ const BarChart = ({ data }) => {
         },
         yaxis: {
           type: "numeric",
-          categories: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
-          axisBorder: {
-            show: false,
-          },
-          axisTicks: {
-            show: false,
-          },
-          labels: {
-            show: true,
-            formatter: function (val) {
-              return val + "%";
-            },
-          },
+          show: false,
         },
       },
     }),
@@ -112,31 +93,29 @@ const BarChart = ({ data }) => {
 
   const [series, setSeries] = useState([
     {
-      name: "Inflation",
+      name: "Closed",
       type: "column",
-      data: [4.4, 5.05, 4.14, 10, 2.27, 3.5, 4.2, 4.4, 5.05, 4.14, 10, 2.27, 3.5, 4.2],
+      data: [
+        4.4, 5.05, 4.14, 10, 2.27, 3.5, 4.2, 4.4, 5.05, 4.14, 10, 2.27, 3.5,
+        4.2,
+      ],
       color: "#D9D9D9",
     },
   ]);
 
   useEffect(() => {
-    if (data) {
+    if (closedLeadsData) {
+      const revenue = closedLeadsData.map((item) => item.closedCount);
       const newSeries = [
         {
           type: "column",
           data: revenue,
           color: "#D9D9D9",
         },
-        {
-          type: "line",
-          data: revenue,
-          color: "#2A2A2A",
-          Zindex: 1,
-        },
       ];
       setSeries(newSeries);
     }
-  }, [data]);
+  }, [closedLeadsData]);
 
   return (
     <div className="app">

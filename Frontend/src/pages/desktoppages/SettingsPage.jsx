@@ -24,15 +24,15 @@ function SettingsPage() {
 
         <div className="settings-form-container">
           <label htmlFor="firstName">First Name</label>
-          <input type="text" id="firstName" />
+          <input type="text" id="firstName" placeholder="Rishabh" />
           <label htmlFor="lastName">Last Name</label>
-          <input type="text" id="lastName" />
+          <input type="text" id="lastName" placeholder="Gupta" />
           <label htmlFor="email">Email</label>
-          <input type="email" id="email" />
-          <label htmlFor="password">Password</label>
-          <input type="password" id="password" />
+          <input type="email" id="email" placeholder="rishabh@gmail.com" />
+          <label htmlFor="password" >Password</label>
+          <input type="password" id="password" placeholder="12345" />
           <label htmlFor="confirmPassword">Confirm Password</label>
-          <input type="password" id="confirmPassword" />
+          <input type="password" id="confirmPassword" placeholder="12345" />
         </div>
 
         <button className="settings-save-button">

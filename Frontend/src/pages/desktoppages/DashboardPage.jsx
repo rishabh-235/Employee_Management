@@ -1,9 +1,53 @@
-import React from "react";
 import "./styles/dashboardpage.css";
 import BarChart from "../../components/BarChart";
 import EmployeeTable from "../../components/EmployeeTable";
+import { useGetDashboardDataQuery } from "../../redux/slices/API/lead.apiSlice";
+import { useGetActivityAdminQuery } from "../../redux/slices/API/activity.apiSlice";
+import { useGetEmployeeMutation } from "../../redux/slices/API/employee.apiSlice";
 
 function DashboardPage() {
+  const { data: dashboardData } = useGetDashboardDataQuery();
+  const { data: activityAdminData } = useGetActivityAdminQuery();
+  const [getEmployee] = useGetEmployeeMutation();
+
+  const getEmployeeData = (employeeId)=>{
+    getEmployee(employeeId).unwrap()
+      .then((data) => {
+        return data;
+      })
+      .catch((error) => {
+        console.error("Error fetching employee data:", error);
+      });
+  }
+
+  const getTimeAgo = (createdAt) => {
+    const created = new Date(createdAt);
+    const now = new Date();
+    const diffMs = now - created;
+    const diffHrs = diffMs / (1000 * 60 * 60);
+    if (diffHrs < 1) return "recently";
+    const rounded = Math.floor(diffHrs);
+    const mins = (diffHrs - rounded) * 60;
+    if (mins >= 30) return `${rounded + 1} hour ago`;
+    return `${rounded} hour ago`;
+  };
+
+  const getActivityMessage = (activity) => {
+    const employeeId = activity.employeeId;
+    const employeeData = getEmployeeData(employeeId);
+    const employeeName = employeeData ? `${employeeData.firstName}` : "Unknown Employee";
+    let timeAgo = getTimeAgo(activity.createdAt);
+
+    if (activity.activityType === "lead assigned") {
+      return `You assigned a lead to ${employeeName} - ${timeAgo}`;
+    } else if (activity.activityType === "lead closed") {
+      return `${employeeName} closed a lead - ${timeAgo}`;
+    } else if (activity.activityType === "lead added") {
+      return `You added a lead - ${timeAgo}`;
+    }
+    return "";
+  };
+
   return (
     <div className="dashboard-page-container">
       <section className="analytics-section">
@@ -23,7 +67,7 @@ function DashboardPage() {
           </svg>
           <div>
             <p>Unassigned Leads</p>
-            <span>12</span>
+            <span>{dashboardData?.unassignedLeadsCount}</span>
           </div>
         </div>
         <div className="analytics-card">
@@ -42,7 +86,7 @@ function DashboardPage() {
           </svg>
           <div>
             <p>Assigned This Week</p>
-            <span>24</span>
+            <span>{dashboardData?.assignedLeadsThisWeekCount}</span>
           </div>
         </div>
         <div className="analytics-card">
@@ -61,7 +105,7 @@ function DashboardPage() {
           </svg>
           <div>
             <p>Active Salespeople</p>
-            <span>5</span>
+            <span>{dashboardData?.activeSalesEmployees}</span>
           </div>
         </div>
         <div className="analytics-card">
@@ -80,7 +124,7 @@ function DashboardPage() {
           </svg>
           <div>
             <p>Conversion Rate</p>
-            <span>32%</span>
+            <span>{dashboardData?.conversionRate}%</span>
           </div>
         </div>
       </section>
@@ -92,8 +136,10 @@ function DashboardPage() {
         <div className="activity-card">
           <h4>Recent Activity Feed</h4>
           <ul>
-            <li>You assigned a lead to Priya - 1 hours ago</li>
-            <li>Jay closed a deal - 2 hours ago</li>
+            {activityAdminData?.map((activity, index) => {
+              return (
+              <li key={index}>{getActivityMessage(activity)}</li>
+            )})}
           </ul>
         </div>
       </section>

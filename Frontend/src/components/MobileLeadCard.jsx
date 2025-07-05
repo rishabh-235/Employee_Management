@@ -30,8 +30,8 @@ function MobileLeadCard({ lead }) {
           setLeadData(data);
           setType(data.type);
           setStatus(data.status);
-          setScheduledDate(data.scheduleAt.date);
-          setScheduledTime(data.scheduleAt.time);
+          setScheduledDate(data.scheduleAt?.date);
+          setScheduledTime(data.scheduleAt?.time);
         })
         .catch((error) => {
           console.error("Error fetching lead:", error);

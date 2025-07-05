@@ -18,6 +18,7 @@ const leadSchema = new Schema({
     date: { type: String, default: null },
     time: { type: String, default: null }
   },
+  closedAt: { type: Date, default: null },
 });
 
 const Lead = mongoose.model("Lead", leadSchema);

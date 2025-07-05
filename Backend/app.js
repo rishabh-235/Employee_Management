@@ -17,7 +17,10 @@ app.use(express.json({ limit: "16kb" }));
 
 import leadRoutes from "./routes/leads.route.js";
 import employeeRoutes from "./routes/employee.route.js";
+import activityRoutes from "./routes/activity.route.js";
+
 app.use("/api/leads", upload.single("file"), leadRoutes);
 app.use("/api/employees", employeeRoutes);
+app.use("/api/activities", activityRoutes);
 
 export { app };

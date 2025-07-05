@@ -9,6 +9,8 @@ import {
   changeStatus,
   getScheduledLeads,
   scheduleLead,
+  getDashboardData,
+  getClosedLeadsCount,
 } from "../controllers/lead.controller.js";
 
 router.post("/addleads", addLead);
@@ -19,5 +21,7 @@ router.post("/changeType", changeType);
 router.post("/changestatus", changeStatus);
 router.get("/getScheduledLeads", getScheduledLeads);
 router.post("/scheduleLeads", scheduleLead);
+router.get("/getdashboarddata", getDashboardData);
+router.get("/getclosedleads", getClosedLeadsCount);
 
 export default router;

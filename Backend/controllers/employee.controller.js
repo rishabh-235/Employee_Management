@@ -47,7 +47,7 @@ const getEmployee = async (req, res) => {
 
 const getAllEmployees = async (_, res) => {
   try {
-    const employees = await Employee.find({}, { password: 0 });
+    const employees = await Employee.find({ role: { $ne: "admin" } }, { password: 0 });
     res.status(200).json(employees);
   } catch (error) {
     res.status(500).json({ message: "Error fetching employees", error });
@@ -68,6 +68,7 @@ const getNumberActiveEmployees = async (_, res) => {
   try {
     const activeEmployeesCount = await Employee.countDocuments({
       status: "active",
+      role: "employee",
     });
     res.status(200).json({ count: activeEmployeesCount });
   } catch (error) {

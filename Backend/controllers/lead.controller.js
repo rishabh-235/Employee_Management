@@ -1,6 +1,8 @@
 import Lead from "../models/lead.model.js";
 import Employee from "../models/employee.model.js";
 import fs from "fs";
+import { startOfWeek, endOfWeek } from "date-fns";
+import Activity from "../models/activity.model.js";
 
 function processCSVData(data) {
   const lines = data.split("\n").filter((line) => line.trim() !== "");
@@ -15,27 +17,40 @@ function processCSVData(data) {
   });
 }
 
+const parseDateTime = (dateStr, timeStr) => {
+  const [day, month, year] = dateStr.split("/");
+  let [time, modifier] = timeStr.split(" ");
+  let [hours, minutes] = time.split(":").map(Number);
+
+  if (modifier && modifier.toUpperCase() === "PM" && hours < 12) {
+    hours += 12;
+  }
+  if (modifier && modifier.toUpperCase() === "AM" && hours === 12) {
+    hours = 0;
+  }
+
+  const hoursStr = hours.toString().padStart(2, "0");
+  const minutesStr = minutes.toString().padStart(2, "0");
+
+  const isoString = `${year}-${month.padStart(2, "0")}-${day.padStart(
+    2,
+    "0"
+  )}T${hoursStr}:${minutesStr}:00`;
+  return new Date(isoString);
+};
+
 const assignLeadsToEmployees = async () => {
   try {
-    console.log("Starting lead assignment process...");
-
-    // Get all unassigned leads
     const unassignedLeads = await Lead.find({ assignedTo: null });
-    console.log(`Found ${unassignedLeads.length} unassigned leads`);
-
     if (unassignedLeads.length === 0) {
       return { message: "No unassigned leads found", assignedCount: 0 };
     }
 
-    // Get all employees with their current lead counts
-    const employees = await Employee.find({});
-    console.log(`Found ${employees.length} employees`);
-
+    const employees = await Employee.find({role: "employee"});
     if (employees.length === 0) {
       return { message: "No employees found", assignedCount: 0 };
     }
 
-    // Calculate current lead counts for each employee
     const employeeLeadCounts = {};
     for (const emp of employees) {
       employeeLeadCounts[emp._id.toString()] = emp.assignedLeads.length;
@@ -44,12 +59,8 @@ const assignLeadsToEmployees = async () => {
     let assignedCount = 0;
     const assignmentLogs = [];
 
-    // Priority 1: Language AND Location Match
-    console.log(
-      "Phase 1: Assigning leads with both language and location match..."
-    );
     for (const lead of unassignedLeads) {
-      if (lead.assignedTo) continue; // Skip if already assigned
+      if (lead.assignedTo) continue;
 
       const exactMatchEmployees = employees.filter(
         (emp) =>
@@ -57,7 +68,6 @@ const assignLeadsToEmployees = async () => {
       );
 
       if (exactMatchEmployees.length > 0) {
-        // Find employee with least leads among exact matches
         const selectedEmployee = exactMatchEmployees.reduce(
           (minEmp, currentEmp) => {
             const minCount = employeeLeadCounts[minEmp._id.toString()];
@@ -74,11 +84,6 @@ const assignLeadsToEmployees = async () => {
         );
       }
     }
-
-    // Priority 2: Language OR Location Match
-    console.log(
-      "Phase 2: Assigning leads with either language or location match..."
-    );
     const remainingLeads = await Lead.find({ assignedTo: null });
 
     for (const lead of remainingLeads) {
@@ -88,7 +93,6 @@ const assignLeadsToEmployees = async () => {
       );
 
       if (partialMatchEmployees.length > 0) {
-        // Find employee with least leads among partial matches
         const selectedEmployee = partialMatchEmployees.reduce(
           (minEmp, currentEmp) => {
             const minCount = employeeLeadCounts[minEmp._id.toString()];
@@ -106,14 +110,9 @@ const assignLeadsToEmployees = async () => {
       }
     }
 
-    // Priority 3: Assign remaining leads equally among all employees
-    console.log(
-      "Phase 3: Assigning remaining leads equally among all employees..."
-    );
     const stillUnassignedLeads = await Lead.find({ assignedTo: null });
 
     for (const lead of stillUnassignedLeads) {
-      // Find employee with least leads overall
       const selectedEmployee = employees.reduce((minEmp, currentEmp) => {
         const minCount = employeeLeadCounts[minEmp._id.toString()];
         const currentCount = employeeLeadCounts[currentEmp._id.toString()];
@@ -128,7 +127,6 @@ const assignLeadsToEmployees = async () => {
       );
     }
 
-    console.log("Assignment complete:", assignmentLogs);
     return {
       message: `Successfully assigned ${assignedCount} leads`,
       assignedCount,
@@ -142,12 +140,10 @@ const assignLeadsToEmployees = async () => {
 
 const assignLeadToEmployee = async (leadId, employeeId) => {
   try {
-    // Update the lead with assigned employee
     await Lead.findByIdAndUpdate(leadId, {
       assignedTo: employeeId,
     });
 
-    // Add lead to employee's assignedLeads array
     await Employee.findByIdAndUpdate(employeeId, {
       $push: {
         assignedLeads: {
@@ -156,6 +152,12 @@ const assignLeadToEmployee = async (leadId, employeeId) => {
         },
       },
     });
+
+    await Activity.create({
+      employeeId: employeeId,
+      activityType: "lead assigned",
+    });
+    
   } catch (error) {
     console.error("Error assigning lead to employee:", error);
     throw error;
@@ -175,17 +177,15 @@ const addLead = async (req, res) => {
       }
 
       try {
-        // Process the CSV data and create leads
         const leads = processCSVData(data);
-        console.log(`Processing ${leads.length} leads from CSV`);
-
-        // Insert leads into database
         const insertedLeads = await Lead.insertMany(leads);
-        console.log(`${insertedLeads.length} leads inserted successfully`);
 
-        // Automatically assign leads to employees
+        await Activity.create({
+          _id: "6866461206610578a24fb1e7",
+          activityType: "lead added",
+        });
+
         const assignmentResult = await assignLeadsToEmployees();
-        console.log("Assignment result:", assignmentResult);
 
         res.status(201).json({
           message: "Leads added and assigned successfully",
@@ -195,14 +195,12 @@ const addLead = async (req, res) => {
           assignmentDetails: assignmentResult.details,
         });
       } catch (error) {
-        console.error("Error adding or assigning leads:", error);
         res.status(500).json({
           message: "Error adding or assigning leads",
           error: error.message,
         });
       }
 
-      // Clean up uploaded file
       fs.unlink(filePath, (err) => {
         if (err) {
           console.error("Error deleting file:", err);
@@ -289,52 +287,15 @@ const getNumberAllAssignedLeads = async (_, res) => {
   }
 };
 
-const conversionRate = async (req, res) => {
+const conversionRate = async () => {
   try {
     const totalLeads = await Lead.countDocuments();
     const closedLeads = await Lead.countDocuments({ status: "closed" });
     const rate = totalLeads ? (closedLeads / totalLeads) * 100 : 0;
-    res.status(200).json({ conversionRate: rate.toFixed(2) });
+    return rate.toFixed(2);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error calculating conversion rate", error });
+    throw new Error("Error calculating conversion rate");
   }
-};
-
-const deleteLead = async (req, res) => {
-  try {
-    const { _id } = req.body;
-    await Lead.findByIdAndDelete(_id);
-    res.status(200).json({ message: "Lead deleted successfully" });
-  } catch (error) {
-    res.status(500).json({ message: "Error deleting lead", error });
-  }
-};
-
-const parseDateTime = (dateStr, timeStr) => {
-  // Convert date to YYYY-MM-DD
-  const [day, month, year] = dateStr.split("/");
-  let [time, modifier] = timeStr.split(" ");
-  let [hours, minutes] = time.split(":").map(Number);
-
-  if (modifier && modifier.toUpperCase() === "PM" && hours < 12) {
-    hours += 12;
-  }
-  if (modifier && modifier.toUpperCase() === "AM" && hours === 12) {
-    hours = 0;
-  }
-
-  // Pad hours and minutes
-  const hoursStr = hours.toString().padStart(2, "0");
-  const minutesStr = minutes.toString().padStart(2, "0");
-
-  // Construct ISO string
-  const isoString = `${year}-${month.padStart(2, "0")}-${day.padStart(
-    2,
-    "0"
-  )}T${hoursStr}:${minutesStr}:00`;
-  return new Date(isoString);
 };
 
 const scheduleLead = async (req, res) => {
@@ -440,11 +401,125 @@ const assignLeads = async (_, res) => {
   }
 };
 
+const closeAllLeads = async (_, res) => {
+  try {
+    const now = new Date();
+
+    const leadsToClose = await Lead.find({
+      scheduleAt: { $ne: null },
+      status: { $ne: "closed" },
+    });
+
+    let closedCount = 0;
+
+    for (const lead of leadsToClose) {
+      const { date, time } = lead.scheduleAt;
+      if (!date || !time) continue;
+
+      const scheduledDateTime = parseDateTime(date, time);
+
+      if (scheduledDateTime <= now) {
+        await Lead.findByIdAndUpdate(lead._id, {
+          status: "closed",
+          closedAt: scheduledDateTime,
+          scheduleAt: {
+            date: null,
+            time: null,
+          },
+        });
+        closedCount++;
+      }
+    }
+
+    console.log(`Closed ${closedCount} leads successfully`);
+  } catch (error) {
+    console.error("Error closing leads:", error);
+  }
+};
+
+const getDashboardData = async (_, res) => {
+  try {
+    const assignedLeadsThisWeek = await Lead.find({
+      recievedAt: {
+        $gte: startOfWeek(new Date()),
+        $lt: endOfWeek(new Date()),
+      },
+    });
+    const unassignedLeadsCount = await Lead.countDocuments({
+      assignedTo: null,
+    });
+    const activeSalesEmployees = await Employee.countDocuments({
+      status: "active",
+      role: "employee",
+    });
+    const conversionRateValue = await conversionRate();
+
+    res.status(200).json({
+      assignedLeadsThisWeekCount: assignedLeadsThisWeek.length,
+      unassignedLeadsCount,
+      activeSalesEmployees,
+      conversionRate: conversionRateValue,
+    });
+  } catch (error) {
+    console.log("Error fetching dashboard data:", error);
+    res.status(500).json({ message: "Error fetching dashboard data", error });
+  }
+};
+
+const getClosedLeadsCount = async (_, res) => {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const startDate = new Date(today);
+    startDate.setDate(today.getDate() - 13);
+
+    const closedLeadsPerDay = await Lead.aggregate([
+      {
+        $match: {
+          status: "closed",
+          closedAt: { $gte: startDate, $lte: today }
+        }
+      },
+      {
+        $group: {
+          _id: {
+            $dateToString: { format: "%Y-%m-%d", date: "$closedAt" }
+          },
+          closedCount: { $sum: 1 }
+        }
+      },
+      { $sort: { _id: 1 } }
+    ]);
+
+    const closedMap = {};
+    closedLeadsPerDay.forEach(item => {
+      closedMap[item._id] = item.closedCount;
+    });
+
+    const response = [];
+    for (let i = 0; i < 14; i++) {
+      const date = new Date(startDate);
+      date.setDate(startDate.getDate() + i);
+      const dateStr = date.toISOString().slice(0, 10);
+      const dayName = date.toLocaleDateString("en-US", { weekday: "short" }).toLowerCase();
+      response.push({
+        day: dayName,
+        date: dateStr,
+        closedCount: closedMap[dateStr] || 0
+      });
+    }
+
+    res.status(200).json(response);
+  } catch (error) {
+    console.error("Error fetching closed leads count:", error);
+    throw error;
+  }
+}
+
 export {
   addLead,
   getLead,
   getAllLeads,
-  deleteLead,
   getNumberAllAssignedLeads,
   conversionRate,
   getListOfBulkUploadLeads,
@@ -453,4 +528,7 @@ export {
   changeStatus,
   getScheduledLeads,
   scheduleLead,
+  closeAllLeads,
+  getDashboardData,
+  getClosedLeadsCount,
 };

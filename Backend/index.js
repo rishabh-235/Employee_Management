@@ -1,6 +1,8 @@
 import dotenv from 'dotenv';
 import connectDB from './db.config.js';
 import { app } from './app.js';
+import cron from 'node-cron';
+import { closeAllLeads } from './controllers/lead.controller.js';
 
 dotenv.config({
     path: './.env'
@@ -21,3 +23,7 @@ connectDB()
 .catch((err)=>{
     console.log("MongoDB connected failed !!! ",err);
 })
+
+cron.schedule('0 * * * *', () => {
+    closeAllLeads();
+});

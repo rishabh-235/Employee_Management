@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const leadApiSlice = createApi({
   reducerPath: "leadApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3000/api/leads" }),
+  baseQuery: fetchBaseQuery({ baseUrl: `${import.meta.env.VITE_BACKENDURL}/api/leads` }),
   endpoints: (builder) => ({
     getBulkUploadLeads: builder.query({
       query: () => "/getBulkUploadLeads",
@@ -32,8 +32,8 @@ export const leadApiSlice = createApi({
       query: (lead) => ({
         url: "/changestatus",
         method: "POST",
-        body: lead
-      })
+        body: lead,
+      }),
     }),
     getScheduledLeads: builder.query({
       query: () => "/getScheduledLeads",
@@ -45,7 +45,23 @@ export const leadApiSlice = createApi({
         body: lead,
       }),
     }),
+    getDashboardData: builder.query({
+      query: () => "/getdashboarddata",
+    }),
+    getClosedLeads: builder.query({
+      query: () => "/getclosedleads",
+    }),
   }),
 });
 
-export const { useGetBulkUploadLeadsQuery, useAddLeadMutation, useGetLeadMutation, useChangeTypeMutation, useChangeStatusMutation, useGetScheduledLeadsQuery, useScheduleLeadMutation } = leadApiSlice;
+export const {
+  useGetBulkUploadLeadsQuery,
+  useAddLeadMutation,
+  useGetLeadMutation,
+  useChangeTypeMutation,
+  useChangeStatusMutation,
+  useGetScheduledLeadsQuery,
+  useScheduleLeadMutation,
+  useGetDashboardDataQuery,
+  useGetClosedLeadsQuery
+} = leadApiSlice;
