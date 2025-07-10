@@ -19,7 +19,7 @@ router.get("/getBulkUploadLeads", getListOfBulkUploadLeads);
 router.post("/assignLeads", assignLeads);
 router.post("/changeType", changeType);
 router.post("/changestatus", changeStatus);
-router.get("/getScheduledLeads", getScheduledLeads);
+router.post("/getScheduledLeads", getScheduledLeads);
 router.post("/scheduleLeads", scheduleLead);
 router.get("/getdashboarddata", getDashboardData);
 router.get("/getclosedleads", getClosedLeadsCount);

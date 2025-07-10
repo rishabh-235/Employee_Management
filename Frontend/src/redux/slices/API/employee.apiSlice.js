@@ -7,7 +7,7 @@ export const employeeApiSlice = createApi({
   }),
   endpoints: (builder) => ({
     getAllEmployees: builder.query({
-      query: () => "/getallEmployees",
+      query: () => "/getallemployees",
     }),
     getEmployee: builder.mutation({
       query: (employeeId) => ({
@@ -18,21 +18,28 @@ export const employeeApiSlice = createApi({
     }),
     addEmployee: builder.mutation({
       query: (newEmployee) => ({
-        url: "/addEmployee",
+        url: "/addemployee",
         method: "POST",
         body: newEmployee,
       }),
     }),
+    updateEmployee: builder.mutation({
+      query: (employeeData) => ({
+        url: "/updateemployee",
+        method: "POST",
+        body: employeeData,
+      }),
+    }),
     loginEmployee: builder.mutation({
       query: (credentials) => ({
-        url: "/loginEmployee",
+        url: "/loginemployee",
         method: "POST",
         body: credentials,
       }),
     }),
     logoutEmployee: builder.mutation({
       query: (employeeId) => ({
-        url: "/logoutEmployee",
+        url: "/logoutemployee",
         method: "POST",
         body: employeeId,
       }),
@@ -46,4 +53,5 @@ export const {
   useAddEmployeeMutation,
   useLoginEmployeeMutation,
   useLogoutEmployeeMutation,
+  useUpdateEmployeeMutation
 } = employeeApiSlice;

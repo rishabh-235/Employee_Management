@@ -5,6 +5,8 @@ import { useGetClosedLeadsQuery } from "../redux/slices/API/lead.apiSlice";
 const BarChart = () => {
   const { data: closedLeadsData } = useGetClosedLeadsQuery();
 
+  console.log("Closed Leads Data:", closedLeadsData);
+
   const day = closedLeadsData?.map((item) => item.day);
 
   const options = useMemo(

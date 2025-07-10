@@ -46,7 +46,7 @@ const assignLeadsToEmployees = async () => {
       return { message: "No unassigned leads found", assignedCount: 0 };
     }
 
-    const employees = await Employee.find({role: "employee"});
+    const employees = await Employee.find({ role: "employee" });
     if (employees.length === 0) {
       return { message: "No employees found", assignedCount: 0 };
     }
@@ -144,20 +144,24 @@ const assignLeadToEmployee = async (leadId, employeeId) => {
       assignedTo: employeeId,
     });
 
-    await Employee.findByIdAndUpdate(employeeId, {
-      $push: {
-        assignedLeads: {
-          leadId: leadId,
-          assignedDate: new Date(),
+    const employee = await Employee.findByIdAndUpdate(
+      employeeId,
+      {
+        $push: {
+          assignedLeads: {
+            leadId: leadId,
+            assignedDate: new Date(),
+          },
         },
       },
-    });
+      { new: true }
+    );
 
     await Activity.create({
       employeeId: employeeId,
+      employeeName: employee.firstName,
       activityType: "lead assigned",
     });
-    
   } catch (error) {
     console.error("Error assigning lead to employee:", error);
     throw error;
@@ -344,9 +348,13 @@ const scheduleLead = async (req, res) => {
   }
 };
 
-const getScheduledLeads = async (_, res) => {
+const getScheduledLeads = async (req, res) => {
   try {
-    const leads = await Lead.find({ scheduleAt: { $ne: null } });
+    const user = req.body.user;
+    const leads = await Lead.find({
+      assignedTo: user,
+      scheduleAt: { $ne: null },
+    });
     res.status(200).json(leads);
   } catch (error) {
     res.status(500).json({ message: "Error fetching scheduled leads", error });
@@ -383,6 +391,21 @@ const changeStatus = async (req, res) => {
     if (!lead) {
       return res.status(404).json({ message: "Lead not found" });
     }
+
+    if (leadStatus === "closed") {
+      await Activity.create({
+        employeeId: lead.assignedTo,
+        employeeName: lead.assignedTo
+          ? (
+              await Employee.findById(lead.assignedTo)
+            ).firstName
+          : undefined,
+        activityType: "lead closed",
+        leadId: lead._id,
+        closedAt: new Date(),
+      });
+    }
+
     res.status(200).json({ message: "Lead status updated successfully", lead });
   } catch (error) {
     res.status(500).json({ message: "Error changing lead status", error });
@@ -429,6 +452,18 @@ const closeAllLeads = async (_, res) => {
         });
         closedCount++;
       }
+
+      await Activity.create({
+        employeeId: lead.assignedTo,
+        employeeName: lead.assignedTo
+          ? (
+              await Employee.findById(lead.assignedTo)
+            ).firstName
+          : undefined,
+        activityType: "lead closed",
+        leadId: lead._id,
+        closedAt: scheduledDateTime,
+      });
     }
 
     console.log(`Closed ${closedCount} leads successfully`);
@@ -477,22 +512,22 @@ const getClosedLeadsCount = async (_, res) => {
       {
         $match: {
           status: "closed",
-          closedAt: { $gte: startDate, $lte: today }
-        }
+          closedAt: { $gte: startDate, $lte: today },
+        },
       },
       {
         $group: {
           _id: {
-            $dateToString: { format: "%Y-%m-%d", date: "$closedAt" }
+            $dateToString: { format: "%Y-%m-%d", date: "$closedAt" },
           },
-          closedCount: { $sum: 1 }
-        }
+          closedCount: { $sum: 1 },
+        },
       },
-      { $sort: { _id: 1 } }
+      { $sort: { _id: 1 } },
     ]);
 
     const closedMap = {};
-    closedLeadsPerDay.forEach(item => {
+    closedLeadsPerDay.forEach((item) => {
       closedMap[item._id] = item.closedCount;
     });
 
@@ -501,11 +536,13 @@ const getClosedLeadsCount = async (_, res) => {
       const date = new Date(startDate);
       date.setDate(startDate.getDate() + i);
       const dateStr = date.toISOString().slice(0, 10);
-      const dayName = date.toLocaleDateString("en-US", { weekday: "short" }).toLowerCase();
+      const dayName = date
+        .toLocaleDateString("en-US", { weekday: "short" })
+        .toLowerCase();
       response.push({
         day: dayName,
         date: dateStr,
-        closedCount: closedMap[dateStr] || 0
+        closedCount: closedMap[dateStr] || 0,
       });
     }
 
@@ -514,7 +551,7 @@ const getClosedLeadsCount = async (_, res) => {
     console.error("Error fetching closed leads count:", error);
     throw error;
   }
-}
+};
 
 export {
   addLead,

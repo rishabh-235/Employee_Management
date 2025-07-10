@@ -2,7 +2,9 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const leadApiSlice = createApi({
   reducerPath: "leadApi",
-  baseQuery: fetchBaseQuery({ baseUrl: `${import.meta.env.VITE_BACKENDURL}api/leads` }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: `${import.meta.env.VITE_BACKENDURL}api/leads`,
+  }),
   endpoints: (builder) => ({
     getBulkUploadLeads: builder.query({
       query: () => "/getBulkUploadLeads",
@@ -36,7 +38,11 @@ export const leadApiSlice = createApi({
       }),
     }),
     getScheduledLeads: builder.query({
-      query: () => "/getScheduledLeads",
+      query: (lead) => ({
+        url: "/getScheduledLeads",
+        method: "POST",
+        body: lead,
+      }),
     }),
     scheduleLead: builder.mutation({
       query: (lead) => ({
@@ -63,5 +69,5 @@ export const {
   useGetScheduledLeadsQuery,
   useScheduleLeadMutation,
   useGetDashboardDataQuery,
-  useGetClosedLeadsQuery
+  useGetClosedLeadsQuery,
 } = leadApiSlice;

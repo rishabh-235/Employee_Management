@@ -1,12 +1,24 @@
 import './style/mobileprofile.css';
 import { useSelector } from 'react-redux';
+import { useUpdateEmployeeMutation } from '../../redux/slices/API/employee.apiSlice';
 
 function MobileProfile() {
   const user = useSelector((state) => state.user.user);
+  const [updateEmployee] = useUpdateEmployeeMutation();
 
   const handleUpdateProfile = (event)=>{
     event.preventDefault();
-    console.log(event.target);
+    const userData = {
+      firstName: event.target.firstname.value,
+      lastName: event.target.lastname.value,
+      password: event.target.password.value,
+    }
+
+    updateEmployee({_id: user._id, userData}).unwrap().then((response) => {
+      console.log("Employee updated successfully:", response);
+    }).catch((error) => {
+      console.error("Error updating employee:", error);
+    });
   }
 
   return (

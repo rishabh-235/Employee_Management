@@ -2,9 +2,11 @@ import './style/mobileschedule.css';
 import MobileSearchbarHeader from '../../components/MobileSearchbarHeader';
 import MobileScheduleCard from '../../components/MobileScheduleCard';
 import { useGetScheduledLeadsQuery } from '../../redux/slices/API/lead.apiSlice';
+import { useSelector } from 'react-redux';
 
 function MobileSchedule() {
-  const {data: leads} = useGetScheduledLeadsQuery();
+  const { user } = useSelector((state) => state.user);
+  const {data: leads} = useGetScheduledLeadsQuery({user: user?._id || ''});
   return (
     <div className="mobile-schedule-container">
         <MobileSearchbarHeader />

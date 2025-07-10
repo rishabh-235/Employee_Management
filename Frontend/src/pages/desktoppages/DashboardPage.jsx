@@ -3,22 +3,10 @@ import BarChart from "../../components/BarChart";
 import EmployeeTable from "../../components/EmployeeTable";
 import { useGetDashboardDataQuery } from "../../redux/slices/API/lead.apiSlice";
 import { useGetActivityAdminQuery } from "../../redux/slices/API/activity.apiSlice";
-import { useGetEmployeeMutation } from "../../redux/slices/API/employee.apiSlice";
 
 function DashboardPage() {
   const { data: dashboardData } = useGetDashboardDataQuery();
   const { data: activityAdminData } = useGetActivityAdminQuery();
-  const [getEmployee] = useGetEmployeeMutation();
-
-  const getEmployeeData = (employeeId)=>{
-    getEmployee(employeeId).unwrap()
-      .then((data) => {
-        return data;
-      })
-      .catch((error) => {
-        console.error("Error fetching employee data:", error);
-      });
-  }
 
   const getTimeAgo = (createdAt) => {
     const created = new Date(createdAt);
@@ -33,15 +21,12 @@ function DashboardPage() {
   };
 
   const getActivityMessage = (activity) => {
-    const employeeId = activity.employeeId;
-    const employeeData = getEmployeeData(employeeId);
-    const employeeName = employeeData ? `${employeeData.firstName}` : "Unknown Employee";
     let timeAgo = getTimeAgo(activity.createdAt);
 
     if (activity.activityType === "lead assigned") {
-      return `You assigned a lead to ${employeeName} - ${timeAgo}`;
+      return `You assigned a lead to ${activity.employeeName} - ${timeAgo}`;
     } else if (activity.activityType === "lead closed") {
-      return `${employeeName} closed a lead - ${timeAgo}`;
+      return `${activity.employeeName} closed a lead - ${timeAgo}`;
     } else if (activity.activityType === "lead added") {
       return `You added a lead - ${timeAgo}`;
     }

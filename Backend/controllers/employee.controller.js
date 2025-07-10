@@ -1,10 +1,8 @@
 import Employee from "../models/employee.model.js";
+import mongoose from "mongoose";
 
 const addEmployee = async (req, res) => {
   try {
-    // for debugging purposes
-    // console.log("Request body:", req.body);
-    // res.status(200).json({ message: "Request received" });
 
     const { firstName, lastName, email, location, language } = req.body;
     const employeeId = `EMP-${Date.now()}`;
@@ -29,7 +27,11 @@ const addEmployee = async (req, res) => {
 const getEmployee = async (req, res) => {
   try {
     const { employeeId } = req.body;
-    const employee = await Employee.findOne({ employeeId }); // Use findOne instead of find
+    const objectId = mongoose.Types.ObjectId.isValid(employeeId) ? new mongoose.Types.ObjectId(employeeId) : null;
+    if (!objectId) {
+      return res.status(400).json({ message: "Invalid employeeId format" });
+    }
+    const employee = await Employee.findOne({ _id: objectId });
 
     if (!employee) {
       return res
@@ -188,11 +190,17 @@ const logoutEmployee = async (req, res) => {
 };
 
 const updateEmployee = async (req, res) => {
+
   try {
-    const { _id, ...updateData } = req.body;
-    const updatedEmployee = await Employee.findByIdAndUpdate(_id, updateData, {
-      new: true,
-    });
+    const { _id, ...userData } = req.body;
+    const updatedEmployee = await Employee.findByIdAndUpdate(
+      _id,
+      userData.userData,
+      { new: true }
+    );
+    if (!updatedEmployee) {
+      return res.status(404).json({ message: "Employee not found" });
+    }
     res.status(200).json({
       message: "Employee updated successfully",
       employee: updatedEmployee,

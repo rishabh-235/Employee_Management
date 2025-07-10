@@ -2,6 +2,7 @@ import mongoose, {Schema} from "mongoose";
 
 const activitySchema = new Schema({
     employeeId: {type: Schema.Types.ObjectId, ref: "Employee"},
+    employeeName: {type: String},
     activityType: {type: String, enum: ["lead assigned", "lead closed", "lead added"], required: true},
 },
 {
